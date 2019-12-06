@@ -87,12 +87,12 @@ public class Population {
 		return r.nextInt((max - min) + 1) + min;
 	}
 	
-	private static int getRandomDoubleRange(double min, double max) {
+	private static double getRandomDoubleRange(double min, double max) {
 		if (min >= max) {
 			throw new IllegalArgumentException("max must be greater than min");
 		}
 		Random r = new Random();
-		return r.nextDouble(((max - min) + 1) + min;
+		return (double) r;
 	}
 	
 	// Comperator for Population sorting
