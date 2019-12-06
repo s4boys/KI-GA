@@ -38,6 +38,17 @@ public class Population {
 		
 		Arrays.sort(this.population, new IndividualComparator());
 		int gaus = (int) (Math.pow(this.population.length, 2) + this.population.length) / 2;
+                Individual[] oldGeneration = new Individual[gaus];
+                int k = 0;
+                
+                for (int i = 0; i < oldGeneration.length; i++) {
+              
+                    for(int j = k; j < i; j++){
+                        oldGeneration[j] = this.getAt(i);
+                        k++;
+                    }
+		}
+                
 		Population newGeneration = new Population(this.popSize/2, this.instance);
 		
 		for (int i = 0; i < newGeneration.popSize; i++) {
