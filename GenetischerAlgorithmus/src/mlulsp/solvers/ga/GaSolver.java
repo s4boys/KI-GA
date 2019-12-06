@@ -27,10 +27,9 @@ public class GaSolver implements Solver {
 		
 		Population test = new Population(anz, instance);
 		test.populate();
-		test.toString();
+		System.out.println(test.toString());
 		test.rouletteSelection();
-		
-		test.toString();
+		System.out.println(test.toString());
 		
 //		for(int i=0;i<anz;i++){
 //			pop[i] = new Individual(instance);

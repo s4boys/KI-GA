@@ -33,32 +33,44 @@ public class Population {
 		}
 	}
 	
-
+	// roulette selection with parents. Rule: no double entries;
 	public void rouletteSelection() {
 		
 		Arrays.sort(this.population, new IndividualComparator());
 		int gaus = (int) (Math.pow(this.population.length, 2) + this.population.length) / 2;
-                Individual[] oldGeneration = new Individual[gaus];
-                int k = 0;
-                
-                for (int i = 0; i < oldGeneration.length; i++) {
-              
-                    for(int j = k; j < i; j++){
-                        oldGeneration[j] = this.getAt(i);
-                        k++;
-                    }
+        Individual[] oldGeneration = new Individual[gaus];
+        int k = 0;
+        
+        for (int i = 0; i < this.popSize; i++) {
+      
+            for(int j = 0; j < i; j++){
+                oldGeneration[k] = this.getAt(i);
+                k++;
+            }
 		}
                 
 		Population newGeneration = new Population(this.popSize/2, this.instance);
 		
 		for (int i = 0; i < newGeneration.popSize; i++) {
-			newGeneration.setAt(i, this.population[getRandomIntRange(0, gaus)]);
+			Individual chosen = oldGeneration[getRandomIntRange(0, gaus)];
+			if(!Arrays.asList(newGeneration.population).contains(chosen)) {
+				newGeneration.setAt(i, chosen);
+			} else {
+				i--;
+			}
 		}
 		
 		this.popSize = newGeneration.popSize;
 		this.population = newGeneration.population;
 	
 	}
+	
+	public void crossover(){
+		
+		
+		
+	};
+	
 	
 	
 
@@ -110,10 +122,10 @@ public class Population {
 			throw new IllegalArgumentException("max must be greater than min");
 		}
 		Random r = new Random();
-		return r.nextInt((max - min) + 1) + min;
+		return (r.nextInt((max - min) + 1) + min )-1;
 	}
 	
-	// Comperator for Population sorting
+	// Comparator for Population sorting
 	private class IndividualComparator implements Comparator<Individual> {
 	    @Override
 	    public int compare(Individual a, Individual b) {

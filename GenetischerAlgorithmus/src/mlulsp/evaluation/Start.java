@@ -31,7 +31,7 @@ public class Start {
 		double optimalValue    = 0.;
 		double precision       = 0.001;
 		
-		String insPath         = "MLULSPinstances/Phase3";
+		String insPath         = "MLULSPinstances/Phase1";
 		String solFile         = "solutions.txt";
 		DirectoryWalker walker = new DirectoryWalker(new File(insPath), false);
 
@@ -65,7 +65,7 @@ public class Start {
 		System.out.println();
 		if (anzahlInstanzen != 0) {
 			System.out.println("----> Anzahl Instanzen mit Vergleichswerten: " + anzahlInstanzen);
-			System.out.println("----> Anzahl optimal gelöster Instanzen: "	+ anzahlOptimal + "\t (Precision: " + precision + ")");
+			System.out.println("----> Anzahl optimal gelï¿½ster Instanzen: "	+ anzahlOptimal + "\t (Precision: " + precision + ")");
 			System.out.println("----> Durchschnittliche prozentuale Abweichung: " + (avgGapOptimal / anzahlInstanzen));
 		}
 	}
