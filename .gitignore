@@ -1,0 +1,6 @@
+/bin/
+*.sol
+.idea
+.settings
+.project
+
