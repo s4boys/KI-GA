@@ -34,25 +34,33 @@ public class Population {
 	}
 	
 
-	
-	
-	public void rouletteSelection() {	
+	public void rouletteSelection() {
+		
 		Arrays.sort(this.population, new IndividualComparator());
 		int gaus = (int) (Math.pow(this.population.length, 2) + this.population.length) / 2;
+		Population newGeneration = new Population(this.popSize/2, this.instance);
 		
+		for (int i = 0; i < newGeneration.popSize; i++) {
+			newGeneration.setAt(i, this.population[getRandomIntRange(0, gaus)]);
+		}
 		
-		System.out.println(getRandomIntRange(0, gaus));
+		this.popSize = newGeneration.popSize;
+		this.population = newGeneration.population;
 	
 	}
 	
 	
-	// Return Individual at Index
+
+	
+	// Getter and Setter
 	public Individual getAt(int index) {
 		return this.population[index];
 	}
+
+	public void setAt(int index, Individual i) {
+		this.population[index] = i;
+	}
 	
-	
-	// Getter and Setter
 	public int getPopSize() {
 		return popSize;
 	}
@@ -76,23 +84,22 @@ public class Population {
 	public void setPopulation(Individual[] population) {
 		this.population = population;
 	}
+	
+	
 
 	// Helper Methods
-	
+	@Override
+	public String toString() {
+		return "Population [popSize=" + popSize + ", instance=" + instance + ", population="
+				+ Arrays.toString(population) + "]";
+	}
+
 	private static int getRandomIntRange(int min, int max) {
 		if (min >= max) {
 			throw new IllegalArgumentException("max must be greater than min");
 		}
 		Random r = new Random();
 		return r.nextInt((max - min) + 1) + min;
-	}
-	
-	private static double getRandomDoubleRange(double min, double max) {
-		if (min >= max) {
-			throw new IllegalArgumentException("max must be greater than min");
-		}
-		Random r = new Random();
-		return (double) r;
 	}
 	
 	// Comperator for Population sorting

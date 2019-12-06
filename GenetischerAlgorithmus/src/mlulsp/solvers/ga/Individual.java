@@ -2,7 +2,7 @@ package mlulsp.solvers.ga;
 
 import java.io.FileWriter;
 import java.io.PrintWriter;
-
+import java.util.Arrays;
 
 import mlulsp.domain.Instance;
 import mlulsp.domain.ProductionSchedule;
@@ -168,4 +168,12 @@ public class Individual {
 			System.out.println(e.getMessage());
 		}
 	}
+
+	@Override
+	public String toString() {
+		return "Individual [ fitness="
+				+ fitness + "]";
+	}
+	
+	
 }

@@ -9,7 +9,7 @@ public class GaSolver implements Solver {
 	private final int anzahlLoesungen;
 
 	/*
-	 * hier können Parameter des GA angegeben werden z.B. PopulationsGroesse,
+	 * hier kï¿½nnen Parameter des GA angegeben werden z.B. PopulationsGroesse,
 	 * IterationenAnzahl
 	 */
 
@@ -27,15 +27,18 @@ public class GaSolver implements Solver {
 		
 		Population test = new Population(anz, instance);
 		test.populate();
+		test.toString();
 		test.rouletteSelection();
 		
-		for(int i=0;i<anz;i++){
-			pop[i] = new Individual(instance);
-			pop[i].initRandom();
-			pop[i].decoding(instance);
-			pop[i].evaluate();
-			
-		}
+		test.toString();
+		
+//		for(int i=0;i<anz;i++){
+//			pop[i] = new Individual(instance);
+//			pop[i].initRandom();
+//			pop[i].decoding(instance);
+//			pop[i].evaluate();
+//			
+//		}
 		
 		
 		elter = new Individual(instance);
