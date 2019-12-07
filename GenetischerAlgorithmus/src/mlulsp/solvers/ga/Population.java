@@ -52,7 +52,7 @@ public class Population {
 		Population newGeneration = new Population(this.popSize/2, this.instance);
 		
 		for (int i = 0; i < newGeneration.popSize; i++) {
-			Individual chosen = oldGeneration[getRandomIntRange(0, gaus)];
+			Individual chosen = oldGeneration[getRandomIntRange(0, gaus-1)];
 			if(!Arrays.asList(newGeneration.population).contains(chosen)) {
 				newGeneration.setAt(i, chosen);
 			} else {
@@ -65,9 +65,35 @@ public class Population {
 	
 	}
 	
-	public void crossover(){
+	// random crossover. Rule: no crossover with itself
+	public void randomCrossover(){
+		Individual[] newGeneration = new Individual[this.popSize*2];
 		
+		for (int i = 0; i < newGeneration.length/2; i++) {
+			newGeneration[i] = this.getAt(i);
+		}
 		
+		for (int i = newGeneration.length/2; i < newGeneration.length; i++) {
+			int indexp1 = getRandomIntRange(0, this.popSize-1);
+			int indexp2 = getRandomIntRange(0, this.popSize-1);
+			Individual parent1 = this.getAt(indexp1);
+			Individual parent2 = this.getAt(indexp2);
+			
+			if(parent1 != parent2) {
+				Individual child = new Individual(this.instance);
+				child.crossover(parent1, parent2);
+				child.mutate();
+				child.decoding(instance);
+				child.evaluate();
+				newGeneration[i] = child;
+			} else {
+				i--;
+			}
+
+		}
+		
+		this.popSize = newGeneration.length;
+		this.population = newGeneration;
 		
 	};
 	
@@ -108,13 +134,16 @@ public class Population {
 		this.population = population;
 	}
 	
+	public void sortPopulation() {
+		Arrays.sort(this.population, new IndividualComparator());
+	}
+	
 	
 
 	// Helper Methods
 	@Override
 	public String toString() {
-		return "Population [popSize=" + popSize + ", instance=" + instance + ", population="
-				+ Arrays.toString(population) + "]";
+		return Arrays.toString(population);
 	}
 
 	private static int getRandomIntRange(int min, int max) {
@@ -122,8 +151,10 @@ public class Population {
 			throw new IllegalArgumentException("max must be greater than min");
 		}
 		Random r = new Random();
-		return (r.nextInt((max - min) + 1) + min )-1;
+		return (r.nextInt((max - min) + 1) + min );
 	}
+	
+
 	
 	// Comparator for Population sorting
 	private class IndividualComparator implements Comparator<Individual> {

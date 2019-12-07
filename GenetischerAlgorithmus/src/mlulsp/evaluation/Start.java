@@ -31,7 +31,7 @@ public class Start {
 		double optimalValue    = 0.;
 		double precision       = 0.001;
 		
-		String insPath         = "MLULSPinstances/Phase1";
+		String insPath         = "MLULSPinstances/Phase3";
 		String solFile         = "solutions.txt";
 		DirectoryWalker walker = new DirectoryWalker(new File(insPath), false);
 

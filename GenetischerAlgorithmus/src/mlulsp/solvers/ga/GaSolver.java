@@ -22,14 +22,24 @@ public class GaSolver implements Solver {
 		Individual.mutationsWahrscheinlichkeit();
 
 		int anz = 10;
-		Individual elter, child;
-		Individual[] pop = new Individual[anz];
+//		Individual elter, child;
+//		Individual[] pop = new Individual[anz];
 		
-		Population test = new Population(anz, instance);
-		test.populate();
-		System.out.println(test.toString());
-		test.rouletteSelection();
-		System.out.println(test.toString());
+		Population population = new Population(anz, instance);
+		population.populate();
+		
+		for (int i = 0; i < anzahlLoesungen/(population.getPopSize()*2); i++) {
+			population.randomCrossover();
+			population.rouletteSelection();
+			System.out.println(population.toString());
+		}
+		
+		population.sortPopulation();
+		
+		Individual best = population.getAt(population.getPopSize()-1);
+		best.ausgabe(instance);
+		return best.getPhaenotype();
+		
 		
 //		for(int i=0;i<anz;i++){
 //			pop[i] = new Individual(instance);
@@ -38,31 +48,31 @@ public class GaSolver implements Solver {
 //			pop[i].evaluate();
 //			
 //		}
-		
-		
-		elter = new Individual(instance);
-		elter.initRandom();
-		elter.decoding(instance);
-		elter.evaluate();
-
-		
-		for (int i = 1; i < anzahlLoesungen; i++) {
-			
-			child = new Individual(instance);
-			child.reproduce(elter);
-			child.mutate();
-			child.decoding(instance);
-			child.evaluate();
-				if (child.getFitness() < elter.getFitness()) {
-					//System.out.println(i + " " + elter.getFitness());
-					elter = child;
-				} 
-
-
-		}
-
-		elter.ausgabe(instance);
-		return elter.getPhaenotype();
+//		
+//		
+//		elter = new Individual(instance);
+//		elter.initRandom();
+//		elter.decoding(instance);
+//		elter.evaluate();
+//
+//		
+//		for (int i = 1; i < anzahlLoesungen; i++) {
+//			
+//			child = new Individual(instance);
+//			child.reproduce(elter);
+//			child.mutate();
+//			child.decoding(instance);
+//			child.evaluate();
+//				if (child.getFitness() < elter.getFitness()) {
+//					//System.out.println(i + " " + elter.getFitness());
+//					elter = child;
+//				} 
+//
+//
+//		}
+//
+//		elter.ausgabe(instance);
+//		return elter.getPhaenotype();
 
 	}
 }
