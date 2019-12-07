@@ -22,16 +22,16 @@ public class GaSolver implements Solver {
 		Individual.mutationsWahrscheinlichkeit();
 
 		int anz = 10;
-//		Individual elter, child;
-//		Individual[] pop = new Individual[anz];
+		Individual elter, child;
+		Individual[] pop = new Individual[anz];
 		
 		Population population = new Population(anz, instance);
 		population.populate();
 		
 		for (int i = 0; i < anzahlLoesungen/(population.getPopSize()*2); i++) {
-			population.randomCrossover();
+			population.rouletteCrossover();
 			population.rouletteSelection();
-			System.out.println(population.toString());
+			//System.out.println(population.toString());
 		}
 		
 		population.sortPopulation();
