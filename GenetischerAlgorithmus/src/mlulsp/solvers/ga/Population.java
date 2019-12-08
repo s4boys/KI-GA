@@ -109,7 +109,8 @@ public class Population {
 			if(parent1 != parent2) {
 				Individual child = new Individual(this.instance);
 				child.crossover(parent1, parent2);
-				child.mutate();
+//				child.mutate();
+				child.swapMutate();
 				child.decoding(instance);
 				child.evaluate();
 				newGeneration[i] = child;
@@ -143,7 +144,8 @@ public class Population {
 			if(parent1 != parent2) {
 				Individual child = new Individual(this.instance);
 				child.crossover(parent1, parent2);
-				child.mutate();
+//				child.mutate();
+				child.swapMutate();
 				child.decoding(instance);
 				child.evaluate();
 				newGeneration[i] = child;

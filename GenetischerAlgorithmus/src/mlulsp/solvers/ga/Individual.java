@@ -3,6 +3,7 @@ package mlulsp.solvers.ga;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Random;
 
 
@@ -132,6 +133,27 @@ public class Individual {
 				if(rGenerator.nextDouble() < pMut){
 					if(genotype[i][j] == 1)genotype[i][j] = 0;
 					else                   genotype[i][j] = 1;
+				}
+			}
+		}
+	}
+	public void swapMutate(){
+		
+		for(int i=0;i<genotype.length;i++){
+			//for(int j=firstPeriodforItems[i];j<=lastPeriodforItems[i];j++){
+			for(int j=0;j<genotype[i].length;j++){
+				if(rGenerator.nextDouble() < pMut){
+					if(j != genotype[i].length-1) {
+						int tmp = genotype[i][j];
+						genotype[i][j] = genotype[i][j+1];
+						genotype[i][j+1] = tmp;
+						//Collections.swap(Arrays.asList(genotype[i]), j, j+1);
+					} else {
+						int tmp = genotype[i][j];
+						genotype[i][j] = genotype[i][j-1];
+						genotype[i][j-1] = tmp;
+						//Collections.swap(Arrays.asList(genotype[i]), j, j-1);
+					}
 				}
 			}
 		}
