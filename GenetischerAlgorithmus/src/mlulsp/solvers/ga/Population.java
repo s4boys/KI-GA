@@ -66,6 +66,8 @@ public class Population {
 				i--;
 			}
 		}
+		 this.popSize = newGeneration.popSize;
+		 this.population = newGeneration.population;
 	}
 	// only select the best half of each generation
 	public void bestHalfSelection() {
@@ -221,7 +223,6 @@ public class Population {
 		int gaus = (int) (Math.pow(this.population.length, 2) + this.population.length) / 2;
         Individual[] roulette = new Individual[gaus];
         int k = 0;
-        
         for (int i = 0; i < this.popSize; i++) {
             for(int j = 0; j <= i; j++){
                 roulette[k] = this.getAt(i);
