@@ -47,6 +47,14 @@ public class Individual {
         }
     }
 
+    public static double getMutationProbability() {
+        return pMut;
+    }
+
+    public static void setMutationProbability(double newMutProp) {
+        pMut = newMutProp;
+    }
+
     public static void mutationsWahrscheinlichkeit() {
         int anzahlPerioden = 0;
         for (int i = 0; i < firstPeriodforItems.length; i++) {
@@ -114,7 +122,7 @@ public class Individual {
     }
 
     public void evaluate() {
-        fitness = phaenotype.getCostSum();
+        fitness = 1 / phaenotype.getCostSum();
     }
 
     public double getFitness() {
@@ -128,7 +136,6 @@ public class Individual {
             }
         }
     }
-
 
 
     public void mutateShiftRight() {
@@ -150,7 +157,7 @@ public class Individual {
     }
 
     public void mutate() {
-    	// shifting is shit, maybe its too often, rare or broken in another way
+        // shifting is shit, maybe its too often, rare or broken in another way
 //        double rand = rGenerator.nextDouble();
 //    	if (rand > 0.9){
 //			if (rGenerator.nextDouble() >= 0.5){
@@ -159,7 +166,7 @@ public class Individual {
 //				mutateShiftRight();
 //			}
 //		}
-        mutateFlip();
+//        mutateFlip();
         mutateSwap();
     }
 
@@ -208,8 +215,9 @@ public class Individual {
     }
 
     public Individual mate(Individual b) {
+        int cross = (int) (rGenerator.nextDouble() * genotype.length);
         Individual child = new Individual(this.genotype);
-        for (int i = 0; i < (this.genotype.length / 2); i++) {
+        for (int i = 0; i < cross; i++) {
             child.genotype[i] = b.genotype[i].clone();
         }
         return child;
@@ -236,7 +244,8 @@ public class Individual {
             String ausgabeName = instance.getName();
             PrintWriter pu = new PrintWriter(new FileWriter(ausgabeName + ".sol"));
             pu.println(instance.getName());
-            pu.println("Fitness (total costs): " + fitness);
+            pu.println(("Fitness: " + fitness));
+            pu.println("Total costs: " + (1 / fitness));
             pu.println("Genotype: ");
 
             for (int i = 0; i < genotype.length; i++) {
