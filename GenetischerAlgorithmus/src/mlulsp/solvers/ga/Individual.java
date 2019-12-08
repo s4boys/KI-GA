@@ -55,8 +55,9 @@ public class Individual {
     		anzahlPerioden +=  lastPeriodforItems[i]-firstPeriodforItems[i]+1;
 		}
 		pMut = 1./anzahlPerioden;
-		//pMut = 0.0005;
-		//System.out.println("Mutationswahrscheinlichkeit : " + pMut);
+//		pMut = 0.0005;
+//		pMut = 0.01;
+		System.out.println("Mutationswahrscheinlichkeit : " + pMut);
 	}
 
 	Individual(Instance inst) {
@@ -125,6 +126,7 @@ public class Individual {
 		}
 	}
 	
+	// change all 1 to 0 and all 0 to 1
 	public void mutate(){
 		
 		for(int i=0;i<genotype.length;i++){
@@ -137,8 +139,20 @@ public class Individual {
 			}
 		}
 	}
+	
+	// flip one random bit
+	public void flipMutate() {
+		for(int i=0;i<genotype.length;i++){
+			if(rGenerator.nextDouble() < pMut){
+				int flipBit = getRandomIntRange(0, genotype[i].length-1);
+				if(genotype[i][flipBit] == 1)genotype[i][flipBit] = 0;
+				else                   genotype[i][flipBit] = 1;
+			}
+		}
+	}
+	
+	// swap to neighbouring elements
 	public void swapMutate(){
-		
 		for(int i=0;i<genotype.length;i++){
 			//for(int j=firstPeriodforItems[i];j<=lastPeriodforItems[i];j++){
 			for(int j=0;j<genotype[i].length;j++){
@@ -159,6 +173,24 @@ public class Individual {
 		}
 	}
 	
+	// shift whole array once to the right
+	public void rightShiftMutate() {
+		for(int i=0;i<genotype.length;i++){
+			if(rGenerator.nextDouble() < pMut){
+				shiftRight(genotype[i], 1);
+			}
+		}
+	}
+	
+	// shift whole array once to the left
+	public void leftShiftMutate() {
+		for(int i=0;i<genotype.length;i++){
+			if(rGenerator.nextDouble() < pMut){
+				shiftLeft(genotype[i], 1);
+			}
+		}
+	}
+	
 	public void crossover(Individual mama, Individual papa){
 		int cross = (int)(rGenerator.nextDouble()*genotype.length);
 		
@@ -174,6 +206,7 @@ public class Individual {
 		}
 
 	}
+	
 	
 	public void ausgabe(Instance instance){
 		try{			
@@ -196,11 +229,37 @@ public class Individual {
 		}
 	}
 
+	
+	public void shiftRight(int[] array, int amount) {
+		for (int j = 0; j < amount; j++) {
+			int a = array[array.length - 1];
+			int i;
+			for (i = array.length - 1; i > 0; i--)
+				array[i] = array[i - 1];
+			array[i] = a;
+		}
+	}
+	public void shiftLeft(int[] array, int amount) {
+		for (int j = 0; j < amount; j++) {
+			int a = array[0];
+			int i;
+			for (i = 0; i < array.length - 1; i++)
+				array[i] = array[i + 1];
+			array[i] = a;
+		}
+	}
 	@Override
 	public String toString() {
 		return "Individual [ fitness="
 				+ fitness + "]";
 	}
 	
+	private int getRandomIntRange(int min, int max) {
+		if (min >= max) {
+			throw new IllegalArgumentException("max must be greater than min");
+		}
+		Random r = new Random();
+		return (r.nextInt((max - min) + 1) + min );
+	}
 	
 }

@@ -60,7 +60,7 @@ public class GaSolver implements Solver {
 			
 			child = new Individual(instance);
 			child.reproduce(elter);
-			child.swapMutate();
+			child.flipMutate();
 			child.decoding(instance);
 			child.evaluate();
 				if (child.getFitness() < elter.getFitness()) {
