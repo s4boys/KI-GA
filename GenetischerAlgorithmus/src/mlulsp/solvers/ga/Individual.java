@@ -3,6 +3,8 @@ package mlulsp.solvers.ga;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.Arrays;
+import java.util.Random;
+
 
 import mlulsp.domain.Instance;
 import mlulsp.domain.ProductionSchedule;
@@ -11,7 +13,10 @@ public class Individual {
 	static int firstPeriodforItems[];
 	static int lastPeriodforItems[];
 	static double pMut;
-	
+
+	// necessary for parallelization
+	Random rGenerator = new Random();
+
 	private int[][] genotype;
 	private ProductionSchedule phaenotype;
 	private double fitness;	
@@ -60,7 +65,7 @@ public class Individual {
 	public void initRandom() {
 		for (int i = 0; i < genotype.length; i++) {
 			for (int j = 0; j < genotype[i].length; j++) {
-				if(Math.random()<0.5)	genotype[i][j] = 0;
+				if(rGenerator.nextDouble()<0.5)	genotype[i][j] = 0;
 				else 					genotype[i][j] = 1;
 			}
 		}
@@ -124,7 +129,7 @@ public class Individual {
 		for(int i=0;i<genotype.length;i++){
 			//for(int j=firstPeriodforItems[i];j<=lastPeriodforItems[i];j++){
 			for(int j=0;j<genotype[i].length;j++){
-				if(Math.random() < pMut){
+				if(rGenerator.nextDouble() < pMut){
 					if(genotype[i][j] == 1)genotype[i][j] = 0;
 					else                   genotype[i][j] = 1;
 				}
@@ -133,7 +138,7 @@ public class Individual {
 	}
 	
 	public void crossover(Individual mama, Individual papa){
-		int cross = (int)(Math.random()*genotype.length);
+		int cross = (int)(rGenerator.nextDouble()*genotype.length);
 		
 		for(int i=0;i<cross;i++){
 			for(int j=0;j<genotype[i].length;j++){

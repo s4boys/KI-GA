@@ -1,4 +1,6 @@
-/.metadata/
-/bin/*
+/bin/
 *.sol
-*.class
+.idea
+.settings
+.project
+
