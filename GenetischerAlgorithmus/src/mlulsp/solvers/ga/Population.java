@@ -50,9 +50,43 @@ public class Population {
 			}
 		}
 		
-		this.popSize = newGeneration.popSize;
-		this.population = newGeneration.population;
+
+
 	
+	}
+	
+	// completely random selection. Rule: no double entries; Mainly for testing
+	public void randomSelection() {
+		Population newGeneration = new Population(this.popSize/2, this.instance);
+		for (int i = 0; i < newGeneration.popSize; i++) {
+			Individual chosen = this.population[getRandomIntRange(0, this.popSize-1)];
+			if(!Arrays.asList(newGeneration.population).contains(chosen)) {
+				newGeneration.setAt(i, chosen);
+			} else {
+				i--;
+			}
+		}
+	}
+	// only select the best half of each generation
+	public void bestHalfSelection() {
+		this.sortPopulation();
+		Population newGeneration = new Population(this.popSize/2, this.instance);
+		for (int i = 0; i < popSize/2; i++) {
+			newGeneration.setAt(i, this.getAt(i+popSize/2));
+		}
+		 this.popSize = newGeneration.popSize;
+		 this.population = newGeneration.population;
+	}
+	
+	// only select the best Individual of each generation
+	public void bestSelection() {
+		this.sortPopulation();
+		Population newGeneration = new Population(this.popSize/2, this.instance);
+		for (int i = 0; i < newGeneration.popSize; i++) {
+			newGeneration.setAt(i, this.getAt(this.popSize-1));
+		}
+		 this.popSize = newGeneration.popSize;
+		 this.population = newGeneration.population;
 	}
 	
 	// random crossover. Rule: no crossover with itself
@@ -159,7 +193,17 @@ public class Population {
 		this.population = population;
 	}
 	
-
+	public double getTotalFitness() {
+		double totalFitness = 0;
+		for (Individual individual : this.population) {
+			totalFitness += individual.getFitness();
+		}
+		return totalFitness;
+	}
+	
+	public double getMeanFitness() {
+		return getTotalFitness()/this.popSize;
+	}
 
 	// Helper Methods
 	@Override
