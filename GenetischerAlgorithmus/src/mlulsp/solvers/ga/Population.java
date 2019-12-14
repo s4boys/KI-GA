@@ -33,8 +33,9 @@ public class Population {
 		}
 	}
 	
-	// roulette selection with parents. Rule: no double entries;
-	public void rouletteSelection() {
+    
+	// rank roulette selection with parents. Rule: no double entries;
+	public void rankRouletteSelection() {
 		
         Individual[] roulette = createRoulette();
 		Population newGeneration = new Population(this.popSize/2, this.instance);
@@ -50,9 +51,6 @@ public class Population {
 			}
 		}
 		
-
-
-	
 	}
 	
 	// completely random selection. Rule: no double entries; Mainly for testing
@@ -144,8 +142,7 @@ public class Population {
 			if(parent1 != parent2) {
 				Individual child = new Individual(this.instance);
 				child.crossover(parent1, parent2);
-//				child.mutate();
-				child.swapMutate();
+				child.mutate();
 				child.decoding(instance);
 				child.evaluate();
 				newGeneration[i] = child;
@@ -219,9 +216,10 @@ public class Population {
 		Arrays.sort(this.population, new IndividualComparator());
 	}
 	
+
 	// create roulette out of this.population
 	private Individual[] createRoulette() {
-		Arrays.sort(this.population, new IndividualComparator());
+		this.sortPopulation();
 		int gaus = (int) (Math.pow(this.population.length, 2) + this.population.length) / 2;
         Individual[] roulette = new Individual[gaus];
         int k = 0;
@@ -248,7 +246,7 @@ public class Population {
 	private class IndividualComparator implements Comparator<Individual> {
 	    @Override
 	    public int compare(Individual a, Individual b) {
-	        return (int) (a.getFitness() - b.getFitness());
+            return a.getFitness() < b.getFitness() ? 1 : (a.getFitness() == b.getFitness() ? 0 : -1);
 	    }
 	}
 	

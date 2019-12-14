@@ -54,10 +54,10 @@ public class Individual {
 		for(int i=0;i<firstPeriodforItems.length;i++){
     		anzahlPerioden +=  lastPeriodforItems[i]-firstPeriodforItems[i]+1;
 		}
-		pMut = 1./anzahlPerioden;
+//		pMut = 1./anzahlPerioden;
 //		pMut = 0.0005;
-//		pMut = 0.01;
-		System.out.println("Mutationswahrscheinlichkeit : " + pMut);
+		pMut = 0.001;
+//		System.out.println("Mutationswahrscheinlichkeit : " + pMut);
 	}
 
 	Individual(Instance inst) {
