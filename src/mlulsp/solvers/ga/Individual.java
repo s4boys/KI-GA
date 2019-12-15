@@ -125,7 +125,7 @@ public class Individual {
     }
 
     public void evaluate() {
-        fitness = 1 / phaenotype.getCostSum();
+        fitness = phaenotype.getCostSum();
     }
 
     public double getFitness() {
@@ -252,8 +252,7 @@ public class Individual {
             String ausgabeName = instance.getName();
             PrintWriter pu = new PrintWriter(new FileWriter(ausgabeName + ".sol"));
             pu.println(instance.getName());
-            pu.println(("Fitness: " + fitness));
-            pu.println("Total costs: " + (1 / fitness));
+            pu.println("Fitness (total costs): " + fitness);
             pu.println("Genotype: ");
 
             for (int i = 0; i < genotype.length; i++) {

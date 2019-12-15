@@ -37,7 +37,7 @@ public class GaSolver implements Solver {
         best.decoding(instance);
         best.evaluate();
         System.out.println("Aufgabe " + instance.getName());
-        System.out.println("Startwert = " + (1/best.getFitness()));
+        System.out.println("Startwert = " + best.getFitness());
 
         population.setBestIndividual(best);
 
@@ -49,9 +49,9 @@ public class GaSolver implements Solver {
         // for Schleife für alle Lösungen
 
         int iterations = anzahlLoesungen / anz;
-        int step_one = (int)(iterations * 0.25);
-        int step_two = (int)(iterations * 0.5);
-        int step_three = (int)(iterations * 0.9);
+        int step_one = (int)(iterations * 0.1);
+        int step_two = (int)(iterations * 0.70);
+        int step_three = (int)(iterations * 0.75);
 
         double pMut = population.getMutationProbability();
 
@@ -62,10 +62,10 @@ public class GaSolver implements Solver {
                 population.setMutationProbability(pMut);
             }
             if(iterations ==step_two){
-                population.setMutationProbability(pMut);
+                population.setMutationProbability(30*pMut);
             }
             if(iterations == step_three){
-                population.setMutationProbability(10*pMut);
+                population.setMutationProbability(pMut);
             }
 
             Individual[] children = new Individual[anz];
@@ -82,7 +82,7 @@ public class GaSolver implements Solver {
 
             population.setNewPopulation(children);
             for (Individual child : children){
-                if (child.getFitness() > best.getFitness()) {
+                if (child.getFitness() < best.getFitness()) {
 //                    System.out.println("Neuer bester Wert = " + (1/best.getFitness()));
                     best = child;
                 }
