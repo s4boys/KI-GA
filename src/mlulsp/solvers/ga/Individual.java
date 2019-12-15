@@ -162,17 +162,18 @@ public class Individual {
     public void mutate(double pMut) {
         // shifting is shit, maybe its too often, rare or broken in another way
         double rand = rGenerator.nextDouble();
-//    	if (rand > 0.9){
+//    	if (rand > 0.98){
 //			if (rGenerator.nextDouble() >= 0.5){
-//				mutateShiftLeft();
+//				mutateShiftLeft(pMut);
 //			} else {
-//				mutateShiftRight();
+//				mutateShiftRight(pMut);
 //			}
 //		}
 //        if (rand > 0.99) {
 //            mutateFlip(pMut);
 //        } else {
-            mutateSwap(pMut);
+            mutateSwap(0.80*pMut);
+
 //        }
     }
 
