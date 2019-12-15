@@ -12,6 +12,7 @@ public class Population {
     double pMut;
     Random rGenerator = new Random();
 
+    Individual best;
     Individual[] entities;
     Individual[] selectedEntities;
     Instance instance;
@@ -51,6 +52,14 @@ public class Population {
         pMut = newMutProp;
     }
 
+    public Individual getBestIndividual(){
+        return this.best;
+    }
+
+    public void setBestIndividual(Individual b){
+        this.best = b;
+    }
+
     public void mutationsWahrscheinlichkeit() {
         int anzahlPerioden = 0;
         for (int i = 0; i < firstPeriodforItems.length; i++) {
@@ -82,6 +91,15 @@ public class Population {
     }
 
     public void setNewPopulation(Individual[] children){
+        // replaces least fit individual with the most fit one from the last generation.
+        int smallest = 0;
+        // elitism not working
+//        for(int i = 1; i < children.length; i++){
+//            if (children[i].getFitness() <= children[smallest].getFitness()){
+//                smallest = i;
+//            }
+//        }
+//        children[smallest] = this.best;
         this.entities = children;
     }
 
@@ -115,7 +133,6 @@ public class Population {
 
     public void mixedSelection(){
         // regular rank roulette but the top 40% and lowest 10% are always kept
-
         // regular rank roulette
         rankRouletteSelection();
 
@@ -144,21 +161,16 @@ public class Population {
 
         Arrays.sort(this.entities,new IndividualComparator());
 
-        Individual[] roulette_pop = new Individual[complete_fitness];
+        this.selectedEntities = new Individual[complete_fitness];
         for (int i = 0, k = 0; i < this.entities.length; i++) {
             for (int j = 0; j < i + 1 && k < complete_fitness; j++, k++) {
-                roulette_pop[k] = this.entities[i];
+                this.selectedEntities[k] = this.entities[i];
             }
         }
-        for (int i = 0; i < this.selectedEntities.length; i++) {
-            int selector = (int) (rGenerator.nextDouble() * roulette_pop.length);
-            this.selectedEntities[i] = roulette_pop[selector];
-        }
-        // Replaces the worst of the new entities with the old best 10% / Elitism
-        int position = (int)(this.entities.length * 0.9);
-        Arrays.sort(this.selectedEntities,new IndividualComparator());
-        System.arraycopy(this.entities,position,this.selectedEntities,0,this.entities.length-position);
-
+//        for (int i = 0; i < this.selectedEntities.length; i++) {
+//            int selector = (int) (rGenerator.nextDouble() * roulette_pop.length);
+//            this.selectedEntities[i] = roulette_pop[selector];
+//        }
     }
 }
 
