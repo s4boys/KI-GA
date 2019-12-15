@@ -47,8 +47,24 @@ public class GaSolver implements Solver {
         // for Schleife für alle Lösungen
 
         int iterations = anzahlLoesungen / anz;
+        int step_one = (int)(iterations * 0.25);
+        int step_two = (int)(iterations * 0.5);
+        int step_three = (int)(iterations * 0.9);
+
+        double pMut = population.getMutationProbability();
+
+        population.setMutationProbability(pMut);
 
         for (int i = 1; i < iterations; i++) {
+            if(iterations == step_one){
+                population.setMutationProbability(pMut);
+            }
+            if(iterations ==step_two){
+                population.setMutationProbability(pMut);
+            }
+            if(iterations == step_three){
+                population.setMutationProbability(10*pMut);
+            }
 
             Individual[] children = new Individual[anz];
             population.rankRouletteSelection();
