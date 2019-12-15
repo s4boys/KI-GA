@@ -138,6 +138,8 @@ public class Population {
         // This selection orders the entities by fitness and distributes them according to their rank.
         // Very good and very bad fitnesses are not as drastic as with the regular roulette.
         // But it seems worse when all fitnesses are almost the same.
+
+        // Gauß
         int complete_fitness = (int) (Math.pow(this.entities.length, 2) + this.entities.length) / 2;
 
         Arrays.sort(this.entities,new IndividualComparator());
@@ -152,9 +154,10 @@ public class Population {
             int selector = (int) (rGenerator.nextDouble() * roulette_pop.length);
             this.selectedEntities[i] = roulette_pop[selector];
         }
-        // keep the best 10%
+        // Replaces the worst of the new entities with the old best 10% / Elitism
         int position = (int)(this.entities.length * 0.9);
-        System.arraycopy(this.entities,position,this.selectedEntities,position,this.entities.length-position);
+        Arrays.sort(this.selectedEntities,new IndividualComparator());
+        System.arraycopy(this.entities,position,this.selectedEntities,0,this.entities.length-position);
 
     }
 }
