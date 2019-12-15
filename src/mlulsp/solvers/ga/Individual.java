@@ -104,7 +104,7 @@ public class Individual {
         phaenotype = new ProductionSchedule(genotype, instance);
     }
 
-    public void ausgabe(int[] firstPeriodforItems,int[] lastPeriodforItems) {
+    public void ausgabe(int[] firstPeriodforItems, int[] lastPeriodforItems) {
         System.out.println("Genotype");
         for (int i = 0; i < genotype.length; i++) {
             for (int j = 0; j < genotype[i].length; j++) {
@@ -169,10 +169,11 @@ public class Individual {
 //				mutateShiftRight();
 //			}
 //		}
-        if(rand > 0.5){
+//        if (rand > 0.99) {
+//            mutateFlip(pMut);
+//        } else {
             mutateSwap(pMut);
-        }
-        mutateFlip(pMut);
+//        }
     }
 
     public void mutateShiftLeft(double pMut) {
@@ -200,6 +201,7 @@ public class Individual {
                 if (rGenerator.nextDouble() < pMut) {
                     if (genotype[i][j] == 1) genotype[i][j] = 0;
                     else genotype[i][j] = 1;
+                    return;
                 }
             }
         }
