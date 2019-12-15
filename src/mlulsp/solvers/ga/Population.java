@@ -1,11 +1,15 @@
 package mlulsp.solvers.ga;
 
 import mlulsp.domain.Instance;
+import mlulsp.domain.ProductionSchedule;
 
 import java.util.Arrays;
 import java.util.Random;
 
 public class Population {
+    int firstPeriodforItems[];
+    int lastPeriodforItems[];
+    double pMut;
     Random rGenerator = new Random();
 
     Individual[] entities;
@@ -16,10 +20,52 @@ public class Population {
         return entities.length;
     }
 
+    public void firstLastPeriodsBerechnen() {
+        ProductionSchedule dummySolution = new ProductionSchedule(instance.getItemCount(), instance.getPeriodCount());
+        dummySolution.justInTime();
+        instance.decodeMatrix(dummySolution);
+        dummySolution.bereinigen();
+
+        firstPeriodforItems = new int[instance.getItemCount()];
+        lastPeriodforItems = new int[instance.getItemCount()];
+
+        for (int i = 0; i < instance.getItemCount(); i++) {
+            boolean first = false;
+            for (int p = 0; p < instance.getPeriodCount(); p++) {
+                if (dummySolution.demand[i][p] != 0) {
+                    if (!first) {
+                        first = true;
+                        firstPeriodforItems[i] = p;
+                    }
+                    lastPeriodforItems[i] = p;
+                }
+            }
+        }
+    }
+
+    public double getMutationProbability() {
+        return pMut;
+    }
+
+    public void setMutationProbability(double newMutProp) {
+        pMut = newMutProp;
+    }
+
+    public void mutationsWahrscheinlichkeit() {
+        int anzahlPerioden = 0;
+        for (int i = 0; i < firstPeriodforItems.length; i++) {
+            anzahlPerioden += lastPeriodforItems[i] - firstPeriodforItems[i] + 1;
+        }
+        pMut = 1. / anzahlPerioden;
+//		pMut = 0.005;
+        System.out.println("Mutationswahrscheinlichkeit : " + pMut);
+    }
+
     Population(int size, Instance inst) {
         this.entities = new Individual[size];
         this.instance = inst;
         this.selectedEntities = new Individual[size];
+
     }
 
     public void initialize() {

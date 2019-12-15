@@ -10,9 +10,9 @@ import mlulsp.domain.Instance;
 import mlulsp.domain.ProductionSchedule;
 
 public class Individual {
-    static int firstPeriodforItems[];
-    static int lastPeriodforItems[];
-    static double pMut;
+//    int firstPeriodforItems[];
+//    int lastPeriodforItems[];
+//    double pMut;
 
     Random rGenerator = new Random();
 
@@ -24,49 +24,52 @@ public class Individual {
         return phaenotype;
     }
 
-    public static void firstLastPeriodsBerechnen(Instance inst) {
-        ProductionSchedule dummySolution = new ProductionSchedule(inst.getItemCount(), inst.getPeriodCount());
-        dummySolution.justInTime();
-        inst.decodeMatrix(dummySolution);
-        dummySolution.bereinigen();
-
-        firstPeriodforItems = new int[inst.getItemCount()];
-        lastPeriodforItems = new int[inst.getItemCount()];
-
-        for (int i = 0; i < inst.getItemCount(); i++) {
-            boolean first = false;
-            for (int p = 0; p < inst.getPeriodCount(); p++) {
-                if (dummySolution.demand[i][p] != 0) {
-                    if (!first) {
-                        first = true;
-                        firstPeriodforItems[i] = p;
-                    }
-                    lastPeriodforItems[i] = p;
-                }
-            }
-        }
-    }
-
-    public static double getMutationProbability() {
-        return pMut;
-    }
-
-    public static void setMutationProbability(double newMutProp) {
-        pMut = newMutProp;
-    }
-
-    public static void mutationsWahrscheinlichkeit() {
-        int anzahlPerioden = 0;
-        for (int i = 0; i < firstPeriodforItems.length; i++) {
-            anzahlPerioden += lastPeriodforItems[i] - firstPeriodforItems[i] + 1;
-        }
-        pMut = 1. / anzahlPerioden;
-//		pMut = 0.005;
-        System.out.println("Mutationswahrscheinlichkeit : " + pMut);
-    }
+    // logic moved to population
+//    public static int[][] firstLastPeriodsBerechnen(Instance inst) {
+//        ProductionSchedule dummySolution = new ProductionSchedule(inst.getItemCount(), inst.getPeriodCount());
+//        dummySolution.justInTime();
+//        inst.decodeMatrix(dummySolution);
+//        dummySolution.bereinigen();
+//
+//        int [] tempFirstPeriodforItems = new int[inst.getItemCount()];
+//        int [] tempLastPeriodforItems = new int[inst.getItemCount()];
+//
+//        for (int i = 0; i < inst.getItemCount(); i++) {
+//            boolean first = false;
+//            for (int p = 0; p < inst.getPeriodCount(); p++) {
+//                if (dummySolution.demand[i][p] != 0) {
+//                    if (!first) {
+//                        first = true;
+//                        tempFirstPeriodforItems[i] = p;
+//                    }
+//                    tempLastPeriodforItems[i] = p;
+//                }
+//            }
+//        }
+//        return new int[][]{tempFirstPeriodforItems,tempLastPeriodforItems};
+//    }
+//
+//    public double getMutationProbability() {
+//        return pMut;
+//    }
+//
+//    public void setMutationProbability(double newMutProp) {
+//        pMut = newMutProp;
+//    }
+//
+//    public static double mutationsWahrscheinlichkeit(int []tempFirstPeriodforItems,int []tempLastPeriodforItems) {
+//        int anzahlPerioden = 0;
+//        for (int i = 0; i < tempFirstPeriodforItems.length; i++) {
+//            anzahlPerioden += tempLastPeriodforItems[i] - tempFirstPeriodforItems[i] + 1;
+//        }
+//        double localMutPercentage = 1. / anzahlPerioden;
+////		pMut = 0.005;
+//        System.out.println("Mutationswahrscheinlichkeit : " + localMutPercentage);
+//        return localMutPercentage;
+//    }
 
     Individual(Instance inst) {
-        genotype = new int[inst.getItemCount()][inst.getPeriodCount()];
+        this.genotype = new int[inst.getItemCount()][inst.getPeriodCount()];
     }
 
     // to copy
@@ -83,25 +86,25 @@ public class Individual {
         }
     }
 
-    public void initJustInTime() {
-//		for (int i = 0; i < genotype.length; i++) {
-//			for (int j = 0; j < genotype[i].length; j++) {
-//				genotype[i][j] = 1;
-//			}
-//		}
-        for (int i = 0; i < genotype.length; i++) {
-            for (int j = firstPeriodforItems[i]; j <= lastPeriodforItems[i]; j++) {
-                genotype[i][j] = 1;
-            }
-        }
-    }
+//    public void initJustInTime() {
+////		for (int i = 0; i < genotype.length; i++) {
+////			for (int j = 0; j < genotype[i].length; j++) {
+////				genotype[i][j] = 1;
+////			}
+////		}
+//        for (int i = 0; i < genotype.length; i++) {
+//            for (int j = firstPeriodforItems[i]; j <= lastPeriodforItems[i]; j++) {
+//                genotype[i][j] = 1;
+//            }
+//        }
+//    }
 
 
     public void decoding(Instance instance) {
         phaenotype = new ProductionSchedule(genotype, instance);
     }
 
-    public void ausgabe() {
+    public void ausgabe(int[] firstPeriodforItems,int[] lastPeriodforItems) {
         System.out.println("Genotype");
         for (int i = 0; i < genotype.length; i++) {
             for (int j = 0; j < genotype[i].length; j++) {
@@ -138,7 +141,7 @@ public class Individual {
     }
 
 
-    public void mutateShiftRight() {
+    public void mutateShiftRight(double pMut) {
         double erwartungswert = genotype.length * genotype[0].length * pMut;
         double pMutShift = 1 / erwartungswert; // mutation happens as often as as the other mutations (I hope)
 
@@ -156,7 +159,7 @@ public class Individual {
         }
     }
 
-    public void mutate() {
+    public void mutate(double pMut) {
         // shifting is shit, maybe its too often, rare or broken in another way
 //        double rand = rGenerator.nextDouble();
 //    	if (rand > 0.9){
@@ -166,11 +169,11 @@ public class Individual {
 //				mutateShiftRight();
 //			}
 //		}
-//        mutateFlip();
-        mutateSwap();
+//        mutateFlip(pMut);
+        mutateSwap(pMut);
     }
 
-    public void mutateShiftLeft() {
+    public void mutateShiftLeft(double pMut) {
         double erwartungswert = genotype.length * genotype[0].length * pMut;
         double pMutShift = 1 / erwartungswert; // mutation happens as often as as the other mutations (I hope)
 
@@ -188,7 +191,7 @@ public class Individual {
         }
     }
 
-    public void mutateFlip() {
+    public void mutateFlip(double pMut) {
         for (int i = 0; i < genotype.length; i++) {
             //for(int j=firstPeriodforItems[i];j<=lastPeriodforItems[i];j++){
             for (int j = 0; j < genotype[i].length; j++) {
@@ -200,7 +203,7 @@ public class Individual {
         }
     }
 
-    public void mutateSwap() {
+    public void mutateSwap(double pMut) {
         for (int i = 0; i < genotype.length; i++) {
             for (int j = 0; j < genotype[i].length; j++) {
                 if (rGenerator.nextDouble() < pMut) {
