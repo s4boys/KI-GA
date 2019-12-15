@@ -39,6 +39,8 @@ public class GaSolver implements Solver {
         System.out.println("Aufgabe " + instance.getName());
         System.out.println("Startwert = " + (1/best.getFitness()));
 
+        population.setBestIndividual(best);
+
         // fortpflanzen alle mit alle? Oder selektion der besten wahrscheinlicher oder ganz random
 
         // v1 one pop of 20 for 10 children + 10 parents, children replace parents
@@ -85,7 +87,7 @@ public class GaSolver implements Solver {
                     best = child;
                 }
             }
-//            System.out.println(i);
+            population.setBestIndividual(best);
         }
 
         best.ausgabe(instance);
