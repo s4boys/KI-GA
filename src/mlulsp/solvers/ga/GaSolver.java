@@ -54,20 +54,20 @@ public class GaSolver implements Solver {
 
         double pMut = population.getMutationProbability();
 
-		Individual.setMut(20*pMut);
+		population.setMutationProbability(20*pMut);
 
 		for (int i = 1; i < iterations; i++) {
 			if(iterations == step_one){
-				Individual.setMut(pMut);
+				population.setMutationProbability(pMut);
 			}
 			if(iterations ==step_two){
-				Individual.setMut(pMut);
+				population.setMutationProbability(pMut);
 			}
 			if(iterations == step_three){
-				Individual.setMut(20*pMut);
+				population.setMutationProbability(20*pMut);
 			}
 			if(iterations == step_four){
-				Individual.setMut(pMut);
+				population.setMutationProbability(pMut);
 			}
 
             Individual[] children = new Individual[anz];
