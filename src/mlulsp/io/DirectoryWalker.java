@@ -92,8 +92,4 @@ public class DirectoryWalker implements Iterator<File>, Iterable<File> {
         return this;
     }
 
-    public int size(){
-        return stack.size();
-    }
-
 }
