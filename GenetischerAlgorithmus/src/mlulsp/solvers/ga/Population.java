@@ -2,6 +2,7 @@ package mlulsp.solvers.ga;
 
 import mlulsp.solvers.ga.Individual;
 import mlulsp.domain.Instance;
+import mlulsp.domain.ProductionSchedule;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -11,9 +12,15 @@ import java.util.Random;
 
 public class Population {
 
+	
+    int firstPeriodforItems[];
+    int lastPeriodforItems[];
+	static double pMut;
+
 	private int popSize;
 	private Instance instance;
 	private Individual[] population;
+	
 	
 	// Constructor
 	public Population(int popSize, Instance instance) {
@@ -33,6 +40,29 @@ public class Population {
 		}
 	}
 	
+    public void firstLastPeriodsBerechnen() {
+        ProductionSchedule dummySolution = new ProductionSchedule(instance.getItemCount(), instance.getPeriodCount());
+        dummySolution.justInTime();
+        instance.decodeMatrix(dummySolution);
+        dummySolution.bereinigen();
+
+        firstPeriodforItems = new int[instance.getItemCount()];
+        lastPeriodforItems = new int[instance.getItemCount()];
+
+        for (int i = 0; i < instance.getItemCount(); i++) {
+            boolean first = false;
+            for (int p = 0; p < instance.getPeriodCount(); p++) {
+                if (dummySolution.demand[i][p] != 0) {
+                    if (!first) {
+                        first = true;
+                        firstPeriodforItems[i] = p;
+                    }
+                    lastPeriodforItems[i] = p;
+                }
+            }
+        }
+    }
+	
     
 	// rank roulette selection with parents. Rule: no double entries;
 	public void rankRouletteSelection() {
@@ -50,6 +80,8 @@ public class Population {
 				i--;
 			}
 		}
+		this.population = newGeneration.population;
+		this.popSize = newGeneration.popSize;
 		
 	}
 	
@@ -107,8 +139,8 @@ public class Population {
 			if(parent1 != parent2) {
 				Individual child = new Individual(this.instance);
 				child.crossover(parent1, parent2);
-//				child.mutate();
-				child.swapMutate();
+//				child.mutate(this.pMut);
+				child.swapMutate(this.pMut);
 				child.decoding(instance);
 				child.evaluate();
 				newGeneration[i] = child;
@@ -142,7 +174,12 @@ public class Population {
 			if(parent1 != parent2) {
 				Individual child = new Individual(this.instance);
 				child.crossover(parent1, parent2);
-				child.mutate();
+				child.randSwapMutate(this.pMut);
+				child.mutate(this.pMut);
+				//child.flipMutate();
+				//child.swapMutate();
+				//child.rightShiftMutate();
+				//child.leftShiftMutate();
 				child.decoding(instance);
 				child.evaluate();
 				newGeneration[i] = child;
@@ -157,11 +194,71 @@ public class Population {
 		
 	};
 	
+	public void onlyRouletteCrossover(){
+		
+		Individual[] roulette = createRoulette();
+		Population newGeneration = new Population(this.popSize, this.instance);
+
+		
+		// vlt mit while ersetzen
+		for (int i = 0; i < newGeneration.popSize; i+=2) {
+			int indexp1 = getRandomIntRange(0, roulette.length-1);
+			int indexp2 = getRandomIntRange(0, roulette.length-1);
+			Individual parent1 = roulette[indexp1];
+			Individual parent2 = roulette[indexp2];
+			if(parent1 != parent2) {
+				Individual child = new Individual(this.instance);
+				child.crossover(parent1, parent2);
+				//child.mutate();
+				child.randSwapMutate(this.pMut);
+				child.mutate(this.pMut);
+				//child.swapMutate();
+				//child.rightShiftMutate();
+				//child.leftShiftMutate();
+				child.decoding(instance);
+				child.evaluate();
+				newGeneration.setAt(i, child);
+
+				Individual child2 = new Individual(this.instance);
+				child2.crossover(parent2, parent1);
+				//child.mutate();
+				child2.randSwapMutate(this.pMut);
+				child2.mutate(this.pMut);
+				//child.swapMutate();
+				//child.rightShiftMutate();
+				//child.leftShiftMutate();
+				child2.decoding(instance);
+				child2.evaluate();
+				newGeneration.setAt(i+1, child2);
+				
+			} else {
+				i -= 2;
+			}
+
+		}
+//		if(newGeneration.getMeanFitness() < this.getMeanFitness()) {
+//			this.population = newGeneration.population;
+//		}
+//		if(newGeneration.getMedianFitness() < this.getMedianFitness()) {
+//			this.population = newGeneration.population;
+//		}
+		this.population = newGeneration.population;
+
+	};
+	
 	
 	
 
 	
 	// Getter and Setter
+    public double getMutationProbability() {
+        return pMut;
+    }
+
+    public void setMutationProbability(double newMutProp) {
+        pMut = newMutProp;
+    }
+    
 	public Individual getAt(int index) {
 		return this.population[index];
 	}
@@ -205,13 +302,32 @@ public class Population {
 	public double getMeanFitness() {
 		return getTotalFitness()/this.popSize;
 	}
+	
+	public double getMedianFitness() {
+		if (this.popSize % 2 == 0)
+		    return (this.getAt(this.popSize/2).getFitness() + this.getAt(this.popSize/2-1).getFitness())/2;
+		else
+		    return this.getAt(this.popSize/2).getFitness();
+	}
 
 	// Helper Methods
 	@Override
 	public String toString() {
 		return Arrays.toString(population);
 	}
+	
+    public void mutationsWahrscheinlichkeit() {
+        int anzahlPerioden = 0;
+        for (int i = 0; i < firstPeriodforItems.length; i++) {
+            anzahlPerioden += lastPeriodforItems[i] - firstPeriodforItems[i] + 1;
+        }
+        pMut = 1. / anzahlPerioden;
+//		  pMut = 0.01;
+//        System.out.println("Mutationswahrscheinlichkeit : " + pMut);
+    }
 
+
+	// sorts population worst to best
 	public void sortPopulation() {
 		Arrays.sort(this.population, new IndividualComparator());
 	}

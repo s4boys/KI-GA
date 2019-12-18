@@ -18,20 +18,24 @@ public class GaSolver implements Solver {
 	}
 
 	public ProductionSchedule solve(Instance instance) {
-		Individual.firstLastPeriodsBerechnen(instance);
-		Individual.mutationsWahrscheinlichkeit();
 
-		int anz = 2000;
+		int anz = 2;
 		Individual elter, child;
 		Individual[] pop = new Individual[anz];
 		
 		Population population = new Population(anz, instance);
+		population.firstLastPeriodsBerechnen();
+		population.mutationsWahrscheinlichkeit();
 		population.populate();
 		
 		for (int i = 0; i < anzahlLoesungen/(population.getPopSize()*2); i++) {
+			//population.onlyRouletteCrossover();
+//			System.out.println(population.getMutationProbability());
 			population.rouletteCrossover();
+			//population.rankRouletteSelection();
 			population.bestHalfSelection();
-			//System.out.println(population.toString());
+			//population.bestSelection();
+//			System.out.println(population.toString());
 		}
 		
 		population.sortPopulation();

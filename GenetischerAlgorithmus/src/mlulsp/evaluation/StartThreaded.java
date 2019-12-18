@@ -34,7 +34,7 @@ public class StartThreaded {
         double optimalValue = 0.; // exists in thread scope
 		final double precision = 0.001; // final for inner class
 
-        String insPath = "MLULSPinstances/Phase1";
+        String insPath = "MLULSPinstances/Phase2";
         //String insPath         = "instances";
         final String solFile = "solutions.txt";
         DirectoryWalker walker = new DirectoryWalker(new File(insPath), false);
