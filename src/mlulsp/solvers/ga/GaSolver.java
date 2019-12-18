@@ -85,9 +85,8 @@ public class GaSolver implements Solver {
 			population.setNewPopulation(children);
 			for (Individual child : children){
 				if (child.getFitness() < tempBest.getFitness()) {
-                    System.out.println("Neuer bester Wert = " + (child.getFitness()));
 					tempBest = child;
-					finalBest = Individual.getCloneOfIndividual(child,instance);
+					finalBest = child.getGenotypeClone(instance);
 				}
 			}
 			population.setBestIndividual(tempBest);

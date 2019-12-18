@@ -72,8 +72,8 @@ public class Population {
 
     Population(int size, Instance inst) {
         this.entities = new Individual[size];
-        this.instance = inst;
         this.selectedEntities = new Individual[size];
+        this.instance = inst;
 
     }
 

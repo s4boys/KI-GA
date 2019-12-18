@@ -34,7 +34,7 @@ public class Start {
         double optimalValue = 0.; // exists in thread scope
 		final double precision = 0.001; // final for inner class
 
-        String insPath = "MLULSPinstances/Phase2";
+        String insPath = "MLULSPinstances/Phase3";
         //String insPath         = "instances";
         String solFile = "solutions.txt";
         DirectoryWalker walker = new DirectoryWalker(new File(insPath), false);
@@ -87,6 +87,7 @@ public class Start {
         	Thread t = new Thread(new GaTask(insFile,sdata));
         	threads.add(t);
         	t.start();
+        	break;
         }
         for (Thread t : threads){
 			try {

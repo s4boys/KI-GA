@@ -2,7 +2,6 @@ package mlulsp.solvers.ga;
 
 import java.io.FileWriter;
 import java.io.PrintWriter;
-import java.util.Arrays;
 import java.util.Random;
 
 
@@ -10,10 +9,6 @@ import mlulsp.domain.Instance;
 import mlulsp.domain.ProductionSchedule;
 
 public class Individual {
-//    int firstPeriodforItems[];
-//    int lastPeriodforItems[];
-//    double pMut;
-
     Random rGenerator = new Random();
 
     private int[][] genotype;
@@ -24,57 +19,8 @@ public class Individual {
         return phaenotype;
     }
 
-    // logic moved to population
-//    public static int[][] firstLastPeriodsBerechnen(Instance inst) {
-//        ProductionSchedule dummySolution = new ProductionSchedule(inst.getItemCount(), inst.getPeriodCount());
-//        dummySolution.justInTime();
-//        inst.decodeMatrix(dummySolution);
-//        dummySolution.bereinigen();
-//
-//        int [] tempFirstPeriodforItems = new int[inst.getItemCount()];
-//        int [] tempLastPeriodforItems = new int[inst.getItemCount()];
-//
-//        for (int i = 0; i < inst.getItemCount(); i++) {
-//            boolean first = false;
-//            for (int p = 0; p < inst.getPeriodCount(); p++) {
-//                if (dummySolution.demand[i][p] != 0) {
-//                    if (!first) {
-//                        first = true;
-//                        tempFirstPeriodforItems[i] = p;
-//                    }
-//                    tempLastPeriodforItems[i] = p;
-//                }
-//            }
-//        }
-//        return new int[][]{tempFirstPeriodforItems,tempLastPeriodforItems};
-//    }
-//
-//    public double getMutationProbability() {
-//        return pMut;
-//    }
-//
-//    public void setMutationProbability(double newMutProp) {
-//        pMut = newMutProp;
-//    }
-//
-//    public static double mutationsWahrscheinlichkeit(int []tempFirstPeriodforItems,int []tempLastPeriodforItems) {
-//        int anzahlPerioden = 0;
-//        for (int i = 0; i < tempFirstPeriodforItems.length; i++) {
-//            anzahlPerioden += tempLastPeriodforItems[i] - tempFirstPeriodforItems[i] + 1;
-//        }
-//        double localMutPercentage = 1. / anzahlPerioden;
-////		pMut = 0.005;
-//        System.out.println("Mutationswahrscheinlichkeit : " + localMutPercentage);
-//        return localMutPercentage;
-//    }
-
     Individual(Instance inst) {
-        this.genotype = new int[inst.getItemCount()][inst.getPeriodCount()];
-    }
-
-    // to copy
-    public Individual(int[][] genotype) {
-        this.genotype = genotype.clone();
+        genotype = new int[inst.getItemCount()][inst.getPeriodCount()];
     }
 
     public void initRandom() {
@@ -86,42 +32,8 @@ public class Individual {
         }
     }
 
-//    public void initJustInTime() {
-////		for (int i = 0; i < genotype.length; i++) {
-////			for (int j = 0; j < genotype[i].length; j++) {
-////				genotype[i][j] = 1;
-////			}
-////		}
-//        for (int i = 0; i < genotype.length; i++) {
-//            for (int j = firstPeriodforItems[i]; j <= lastPeriodforItems[i]; j++) {
-//                genotype[i][j] = 1;
-//            }
-//        }
-//    }
-
-
     public void decoding(Instance instance) {
         phaenotype = new ProductionSchedule(genotype, instance);
-    }
-
-    public void ausgabe(int[] firstPeriodforItems, int[] lastPeriodforItems) {
-        System.out.println("Genotype");
-        for (int i = 0; i < genotype.length; i++) {
-            for (int j = 0; j < genotype[i].length; j++) {
-                System.out.print(genotype[i][j]);
-            }
-            System.out.println();
-        }
-        System.out.println();
-        System.out.println("Phaenotype");
-        for (int i = 0; i < phaenotype.genome.length; i++) {
-            for (int j = 0; j < phaenotype.genome[i].length; j++) {
-                System.out.print(phaenotype.genome[i][j]);
-            }
-            System.out.print(" " + firstPeriodforItems[i] + " " + lastPeriodforItems[i]);
-            System.out.println();
-        }
-        System.out.println();
     }
 
     public void evaluate() {
@@ -131,15 +43,6 @@ public class Individual {
     public double getFitness() {
         return fitness;
     }
-
-    public void reproduce(Individual elter) {
-        for (int i = 0; i < elter.genotype.length; i++) {
-            for (int j = 0; j < elter.genotype[i].length; j++) {
-                this.genotype[i][j] = elter.genotype[i][j];
-            }
-        }
-    }
-
 
     public void mutateShiftRight(double pMut) {
         double erwartungswert = genotype.length * genotype[0].length * pMut;
@@ -160,21 +63,7 @@ public class Individual {
     }
 
     public void mutate(double pMut) {
-        // shifting is shit, maybe its too often, rare or broken in another way
-        double rand = rGenerator.nextDouble();
-//    	if (rand > 0.98){
-//			if (rGenerator.nextDouble() >= 0.5){
-//				mutateShiftLeft(pMut);
-//			} else {
-//				mutateShiftRight(pMut);
-//			}
-//		}
-//        if (rand > 0.99) {
-//            mutateFlip(pMut);
-//        } else {
-            mutateSwap(0.80*pMut);
-
-//        }
+        mutateSwap(0.80 * pMut);
     }
 
     public void mutateShiftLeft(double pMut) {
@@ -209,43 +98,40 @@ public class Individual {
     }
 
     public void mutateSwap(double pMut) {
-        for (int i = 0; i < genotype.length; i++) {
-            for (int j = 0; j < genotype[i].length; j++) {
+        for (int i = 0; i < this.genotype.length; i++) {
+            for (int j = 0; j < this.genotype[i].length; j++) {
                 if (rGenerator.nextDouble() < pMut) {
-                    int temp = genotype[i][j];
-                    int new_column = (int) (rGenerator.nextDouble() * genotype.length);
-                    int new_row = (int) (rGenerator.nextDouble() * genotype[new_column].length);
-                    genotype[i][j] = genotype[new_column][new_row];
-                    genotype[new_column][new_row] = temp;
+                    int temp = this.genotype[i][j];
+                    int new_column = (int) (rGenerator.nextDouble() * this.genotype.length);
+                    int new_row = (int) (rGenerator.nextDouble() * this.genotype[new_column].length);
+                    this.genotype[i][j] = this.genotype[new_column][new_row];
+                    this.genotype[new_column][new_row] = temp;
                 }
             }
         }
     }
 
-    public Individual mate(Individual b) {
-        int cross = (int) (rGenerator.nextDouble() * genotype.length);
-        Individual child = new Individual(this.genotype);
+    public Individual getGenotypeClone(Instance instance) {
+        Individual clone = new Individual(instance);
+        for (int i = 0; i < this.genotype.length; i++) {
+            System.arraycopy(this.genotype[i], 0, clone.genotype[i], 0, this.genotype[i].length);
+        }
+        return clone;
+    }
+
+    public Individual mate(Individual other, Instance instance) {
+        int cross = (int) (Math.random() * genotype.length);
+
+        Individual child = new Individual(instance);
+
         for (int i = 0; i < cross; i++) {
-            child.genotype[i] = b.genotype[i].clone();
+            System.arraycopy(other.genotype[i], 0, child.genotype[i], 0, other.genotype[i].length);
+        }
+        for (int i = cross; i < genotype.length; i++) {
+            System.arraycopy(this.genotype[i], 0, child.genotype[i], 0, this.genotype[i].length);
         }
         return child;
     }
-
-//	public void crossover(Individual mama, Individual papa) {
-//		int cross = (int) (rGenerator.nextDouble() * genotype.length);
-//		cross = (int) (0.5 * genotype.length);
-//		for (int i = 0; i < cross; i++) {
-//			for (int j = 0; j < genotype[i].length; j++) {
-//				this.genotype[i][j] = mama.genotype[i][j];
-//			}
-//		}
-//		for (int i = cross; i < genotype.length; i++) {
-//			for (int j = 0; j < genotype[i].length; j++) {
-//				this.genotype[i][j] = papa.genotype[i][j];
-//			}
-//		}
-//
-//	}
 
     public void ausgabe(Instance instance) {
         try {
